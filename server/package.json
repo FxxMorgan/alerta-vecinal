@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "WTFPL",
   "type": "commonjs",
   "dependencies": {
     "ws": "^8.21.3"

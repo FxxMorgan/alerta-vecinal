@@ -182,4 +182,6 @@ Por si tienes curiosidad de cómo está programado por dentro:
 
 ## 📄 Licencia
 
-Código libre para uso comunitario. Puedes modificarlo, compartirlo y adaptarlo a las necesidades de tu propio pasaje, barrio o edificio.
+Este proyecto está liberado bajo la licencia **[WTFPL](LICENSE)** (*Do What The Fuck You Want To Public License*).  
+Puedes hacer absolutamente lo que quieras con el código: usarlo, modificarlo, redistribuirlo o adaptarlo para cualquier comunidad.
+
