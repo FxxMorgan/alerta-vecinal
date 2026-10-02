@@ -1,221 +1,185 @@
-# 🚨 Alerta Vecinal - Sistema de Emergencia Comunitaria
+# 🚨 Alerta Vecinal - Plantilla Base para Alarma Comunitaria
 
-> **MVP Fast** diseñado para comunidades, condominios y pasajes que necesitan una alarma de pánico en tiempo real, de máxima penetración sonora y capaz de **despertar los teléfonos móviles incluso si están con pantalla bloqueada o en reposo**, sin depender de servicios de terceros como Firebase.
-
----
-
-## 🧭 ¿Para qué es este proyecto?
-
-En situaciones de peligro o robos, los grupos de WhatsApp o alarmas silenciosas no sirven porque:
-- Los mensajes no suenan si el vecino tiene el teléfono silenciado o en "No Molestar".
-- Android entra en ahorro de batería profundo (**Doze Mode**) y posterga las notificaciones.
-- La gente no se despierta en la madrugada con una notificación normal.
-
-**Alerta Vecinal** soluciona esto:
-1. Un vecino pulsa el botón de pánico en la app móvil.
-2. La señal viaja al servidor por **WebSocket**.
-3. **Todos los teléfonos despiertan su pantalla de inmediato**, suben su volumen al 100%, activan una sirena de emergencia penetrante en bucle continuo y vibran con máxima intensidad.
+> **Plantilla de código abierto (Starter Kit)** diseñada para que cualquier persona o comunidad pueda crear, personalizar y compilar su propia aplicación de **Alerta Vecinal y Botón de Pánico**, incluso si no tienes mucha experiencia programando.
+> 
+> Está lista para abrirse en editores con Inteligencia Artificial (**Cursor, Windsurf, Claude, ChatGPT, Copilot**) para que puedas pedirle a la IA los cambios que quieras y compilar tu propio archivo `.apk`.
 
 ---
 
-## 📦 1. Probar en 2 Minutos (Instalar APK en tu Teléfono)
+## 🎯 ¿Qué hace este proyecto?
 
-Si solo quieres usar la app en tu teléfono sin tocar código:
-1. Descarga el archivo **[`releases/AlertaVecinal-ARMv8.apk`](releases/AlertaVecinal-ARMv8.apk)** directamente a tu teléfono Android.
-2. Ábrelo e instálalo (si te lo pide, autoriza *Instalar aplicaciones de fuentes desconocidas*).
-3. **⚠️ PASO OBLIGATORIO DE BATERÍA**: Al abrir la app verás un aviso amarillo:
-   > **Optimización de Batería Activa**
-   > *Pulsa en "Excluir de Optimización" y selecciona Permitir*.
-   > 
-   > **¿Por qué?** Android apaga las antenas WiFi/4G y suspende apps cuando la pantalla se bloquea. Al excluirla, la conexión se mantiene viva 24/7 para que la alarma suene al instante.
-4. En el ícono de tuerca (⚙️) puedes colocar tu nombre (ej. *"Casa 4B - Los Aromos"*) y la dirección del servidor.
+Resuelve el problema de las emergencias o robos en vecindarios donde los mensajes de WhatsApp no despiertan a nadie:
+1. **Un vecino presiona el botón de pánico** en su teléfono.
+2. La señal viaja a un servidor central en tiempo real por **WebSocket** (sin depender de Firebase ni servicios de pago).
+3. **Todos los teléfonos de los vecinos suscritos encienden su pantalla**, suben el volumen al 100%, reproducen una sirena de emergencia penetrante y vibran con fuerza, **incluso si el teléfono está bloqueado o en silencio**.
 
 ---
 
-## ☁️ 2. Dónde y Cómo Subir el Backend 100% Gratis
+## 🧭 ¿No sabes mucho de programación? Empieza aquí
 
-> **Nota técnica importante sobre Vercel**: Vercel es una plataforma *serverless* pensada para webs que responden en milisegundos y luego se duermen. **Las funciones serverless de Vercel no permiten conexiones WebSocket continuas de 24 horas**. Para que los vecinos estén escuchando siempre alertas en tiempo real necesitas un proceso persistente. Aquí tienes las dos mejores opciones **100% gratuitas**:
+Este proyecto está dividido en dos partes muy sencillas:
 
----
+```text
+alerta-vecinal/
+├── app/        👉 La aplicación para los teléfonos Android (hecha en Flutter)
+└── server/     👉 El servidor central que conecta a todos los vecinos (hecho en Node.js)
+```
 
-### Opción A: Cloudflare Tunnel (Recomendada - Gratis y Ultra Rápida)
-Puedes correr el servidor en tu propia PC, notebook o una Raspberry Pi vieja en tu casa, y Cloudflare te dará un dominio público seguro con HTTPS/WSS gratis, sin abrir puertos en el router y sin IP pública.
-
-1. Crea una cuenta gratuita en [Cloudflare](https://dash.cloudflare.com/).
-2. Ve a **Zero Trust** > **Networks** > **Tunnels**.
-3. Crea un nuevo túnel (ej. `alerta-vecinos`) y copia el comando que te entrega para instalar `cloudflared` en tu máquina.
-4. En la pestaña **Public Hostnames** del túnel, agrega una ruta:
-   - **Subdominio**: `vecinos` (o el que quieras de tu dominio, ej: `vecinos.tudominio.com`).
-   - **Type**: `HTTP`.
-   - **URL**: `localhost:7866`.
-5. ¡Listo! Tu servidor local en el puerto `7866` ahora tiene una URL segura global:
-   - Web: `https://vecinos.tudominio.com`
-   - WebSocket para la App: `wss://vecinos.tudominio.com`
+No necesitas tocar código complejo a mano. Sigue estos 3 pasos:
 
 ---
 
-### Opción B: Render.com o Koyeb (En la Nube 24/7 Gratis)
-Si prefieres que esté en la nube sin depender de tu PC encendida:
+## 🚀 PASO 1: Levantar tu propio Servidor (100% Gratis)
 
-#### En Render.com:
+Para que los teléfonos de tus vecinos puedan comunicarse entre sí, necesitas tener el servidor corriendo. Tienes dos opciones gratuitas:
+
+### Opción A: En la Nube (24/7 Gratis con Render.com) — *Recomendada si no quieres dejar tu PC encendida*
 1. Crea una cuenta gratuita en [render.com](https://render.com/).
-2. Haz clic en **New +** > **Web Service**.
-3. Conecta este repositorio de GitHub (`FxxMorgan/alerta-vecinal`).
-4. Configura:
+2. Haz clic en el botón **New +** y selecciona **Web Service**.
+3. Conecta este repositorio de GitHub (o tu fork).
+4. En las opciones de configuración escribe:
    - **Root Directory**: `server`
    - **Runtime**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `node server.js`
    - **Plan**: `Free`
-5. Render te dará una URL como `https://alerta-vecinal.onrender.com`.
-   - En la app Flutter solo pones en la configuración: `wss://alerta-vecinal.onrender.com`.
+5. Render te entregará una dirección pública gratuita similar a:  
+   `https://mi-alerta-vecinal.onrender.com`
+6. ¡Esa es tu dirección! En la app de los vecinos se usará:  
+   `wss://mi-alerta-vecinal.onrender.com`
 
 ---
 
-### Opción C: Ejecutar en tu PC / Red Local WiFi
+### Opción B: En tu propia PC con Cloudflare Tunnel (100% Gratis) — *Ultra rápido y sin abrir puertos en el router*
+Si tienes un computador, notebook o Raspberry Pi en tu casa:
+1. Instala Node.js desde [nodejs.org](https://nodejs.org/).
+2. Abre la terminal en la carpeta `server` y ejecuta:
+   ```bash
+   npm install
+   node server.js
+   ```
+   Tu servidor estará funcionando en el puerto `7866` (`http://localhost:7866`).
+3. Para que los vecinos se conecten desde la calle o con datos móviles (4G/5G), crea un túnel gratis en [Cloudflare Zero Trust](https://dash.cloudflare.com/):
+   - Ve a **Networks** > **Tunnels** > **Create Tunnel**.
+   - Agrega un **Public Hostname** (ej. `vecinos.tudominio.com`).
+   - Apunta el servicio a: `HTTP` en `localhost:7866`.
+   - La dirección para la app será: `wss://vecinos.tudominio.com`.
 
-Si solo quieres probar en tu casa o red local:
+---
+
+### Opción C: Solo en la Red Local WiFi de tu casa
+Si solo quieres hacer pruebas con teléfonos conectados al mismo WiFi:
 ```bash
 cd server
 npm install
 node server.js
 ```
-El servidor te mostrará en consola:
-```text
-======================================================
-🚨 SERVIDOR DE ALERTA VECINAL INICIADO CON ÉXITO
-======================================================
-📍 IP Local detectada:   192.168.1.100
-🌐 Panel Web / REST:     http://192.168.1.100:7866
-⚡ WebSocket URL:         ws://192.168.1.100:7866
-💻 Localhost:            http://localhost:7866
-======================================================
-```
-Abre `http://localhost:7866` en tu navegador para ver el panel de administración en vivo.
+El servidor te dirá en pantalla la IP de tu PC (ejemplo: `ws://192.168.1.50:7866`).
 
 ---
 
-## 🤖 3. Guía para Programar y Modificar este Código con IA
+## 📱 PASO 2: Personalizar y Compilar tu propio APK
 
-Si usas **Cursor, Claude, Windsurf, GitHub Copilot, Antigravity o ChatGPT**, esta sección te explica cómo está estructurado el código para que le pidas cambios a la IA fácilmente.
+Para que cada vecino tenga la app en su teléfono Android, vas a generar tu propio instalador `.apk`.
 
-### Mapa del Código Fuente
+### Requisitos en tu PC:
+1. Tener instalado [Flutter](https://docs.flutter.dev/get-started/install) (es gratuito y de código abierto).
+2. Tener Android Studio o el Android SDK instalado.
+
+### 1. Cambiar la dirección del servidor por defecto:
+Abre el archivo `app/lib/services/alarm_sync_service.dart` y en la línea 63 pon tu propia dirección:
+```dart
+String _serverUrl = 'wss://mi-alerta-vecinal.onrender.com'; // O la IP de tu servidor
+```
+
+### 2. Compilar tu APK:
+Abre la terminal en la carpeta `app` y ejecuta estos 3 comandos:
+```bash
+cd app
+flutter pub get
+flutter build apk --target-platform android-arm64
+```
+¡Listo! Cuando termine, tu archivo instalador estará en:  
+📂 `app/build/app/outputs/flutter-apk/app-release.apk`
+
+Copia ese archivo a tu teléfono o compártelo por WhatsApp con tus vecinos para que lo instalen.
+
+---
+
+## ⚠️ PASO OBLIGATORIO AL INSTALAR EN EL TELÉFONO
+
+Cuando tú o tus vecinos abran la app por primera vez, verán un cartel amarillo:
+> **Optimización de Batería Activa**  
+> *Pulsa en "Excluir de Optimización" y selecciona Permitir*.
+
+👉 **¿Por qué es indispensable?**  
+Android normalmente "duerme" las aplicaciones y apaga las antenas de red cuando la pantalla está bloqueada para ahorrar batería. Al darle este permiso, la app puede mantener despierta la conexión en segundo plano y encender la pantalla en el segundo exacto en que alguien toque la alarma.
+
+---
+
+## 🤖 PASO 3: Cómo Programar y Modificar este Proyecto con IA
+
+Esta plantilla está pensada para que la abras en un editor con Inteligencia Artificial como **Cursor**, **Windsurf**, **VS Code con Claude / Copilot**, o uses **ChatGPT / Claude Web**.
+
+### Mapa de Archivos (Para que sepas dónde está cada cosa)
 
 ```text
 alerta-vecinal/
 │
-├── server/                                # BACKEND NODE.JS
-│   └── server.js                          # Servidor HTTP + WebSocket + Dashboard Web integrado
+├── server/                                # SERVIDOR CENTRAL
+│   └── server.js                          # Controla los mensajes WebSocket y el panel web
 │
-└── app/                                   # APLICACIÓN MÓVIL FLUTTER
+└── app/                                   # APP MÓVIL (FLUTTER)
     ├── android/
-    │   ├── app/src/main/AndroidManifest.xml   # Permisos de batería, wake lock y foreground service
-    │   └── app/src/main/kotlin/.../MainActivity.kt # Código nativo Kotlin: despierta pantalla y sube volumen
+    │   ├── app/src/main/AndroidManifest.xml   # Permisos de Android (batería, volumen, pantalla)
+    │   └── app/src/main/kotlin/.../MainActivity.kt # Código nativo para encender pantalla y subir volumen
     │
     ├── assets/sounds/
-    │   └── alarm_siren.wav                # Archivo de audio de la sirena de emergencia
+    │   └── alarm_siren.wav                # Sonido de la sirena de emergencia
     │
     └── lib/
-        ├── main.dart                      # Punto de entrada de la aplicación
-        ├── models/
-        │   └── alert_model.dart           # Estructura del mensaje de alerta (id, sender, notes, timestamp)
+        ├── main.dart                      # Inicio de la app
+        ├── models/alert_model.dart        # Qué datos viajan en la alarma (quién la envió, hora, motivo)
         ├── services/
-        │   ├── alarm_sync_service.dart    # Conexión WebSocket, reconexión automática y Foreground Service
-        │   ├── alarm_player_service.dart  # Reproducción en bucle de la sirena, vibración y WakeLock
-        │   └── native_alert_service.dart  # Canal de comunicación con Android nativo (batería y pantalla)
+        │   ├── alarm_sync_service.dart    # Conexión con el servidor y reconexión automática
+        │   ├── alarm_player_service.dart  # Reproducción de la sirena al 100% y vibración
+        │   └── native_alert_service.dart  # Comunicación con las funciones nativas de Android
         ├── screens/
-        │   ├── home_screen.dart           # Pantalla principal con el Botón de Pánico circular
-        │   ├── active_alert_dialog.dart   # Pantalla completa de emergencia cuando suena la alarma
-        │   └── settings_sheet.dart        # Configuración de nombre de vecino y servidor
-        └── theme/
-            └── app_theme.dart             # Paleta de colores (Modo Claro estricto / Swiss Clean)
+        │   ├── home_screen.dart           # Pantalla principal con el Botón de Pánico
+        │   ├── active_alert_dialog.dart   # Pantalla que se muestra cuando la alarma está sonando
+        │   └── settings_sheet.dart        # Menú para cambiar el nombre de la casa o el servidor
+        └── theme/app_theme.dart           # Colores y estilo visual (Modo Claro limpio y sobrio)
 ```
 
 ---
 
-### 💬 Prompts Listos para Copiar y Pegar en tu Asistente de IA
+### 💬 Prompts para Copiar y Pegar en la IA
 
-Copia y pega cualquiera de estos prompts en tu editor con IA para agregar nuevas funciones:
+Puedes copiar y pegar estos textos tal cual en tu IA para que haga los cambios por ti:
 
-#### 💡 Prompt 1: Enviar Ubicación GPS del Vecino en la Alerta
-> *"Actuando como desarrollador experto en Flutter y Node.js, agrega la función de geolocalización al proyecto. Cuando el vecino presione el botón de pánico en `app/lib/screens/home_screen.dart`, obtén las coordenadas GPS usando el paquete `geolocator` y agrégalas al `AlertModel`. Luego, en `app/lib/screens/active_alert_dialog.dart` y en el panel web `server/server.js`, muestra un enlace de Google Maps con la ubicación exacta donde se originó la alarma."*
+#### 🟢 Para cambiar el nombre y diseño para tu condominio o barrio:
+> *"Quiero personalizar esta app para mi comunidad llamada 'Condominio Los Alerces'. Revisa `app/lib/screens/home_screen.dart` y `app/lib/theme/app_theme.dart` y actualiza los títulos, el nombre en la barra superior y ajusta los colores de acento para que coincidan con la identidad de mi comunidad."*
 
-#### 💡 Prompt 2: Selector de Tipo de Emergencia (Robo, Fuego, Médica)
-> *"Quiero que antes o al disparar la alarma en `app/lib/screens/home_screen.dart`, el vecino pueda elegir entre tres tipos de alerta: 1) Robo / Sospechosos, 2) Incendio, 3) Emergencia Médica. Actualiza `AlertModel`, el servidor en `server/server.js` y el diseño visual de la pantalla de alerta para que muestre el color y el ícono correspondiente según el tipo."*
+#### 🟢 Para agregar envío de ubicación GPS en la alarma:
+> *"Agrega soporte de geolocalización. Cuando un vecino presione el botón de pánico en `home_screen.dart`, obtén las coordenadas GPS del teléfono usando el paquete `geolocator` y envíalas dentro de `AlertModel`. Luego en `active_alert_dialog.dart` muestra un botón que diga 'Ver Ubicación en Google Maps'."*
 
-#### 💡 Prompt 3: Soporte para Múltiples Calles o Pasajes (Canales)
-> *"Modifica `server/server.js` y `app/lib/services/alarm_sync_service.dart` para soportar canales o grupos de vecinos (ej: 'Pasaje Los Aromos', 'Calle Central'). Cada cliente debe poder suscribirse a su pasaje o al canal general, y las alertas deben emitirse solo a los vecinos pertenecientes a ese grupo."*
+#### 🟢 Para crear diferentes tipos de emergencia (Robo, Fuego, Médico):
+> *"Modifica la app para que al presionar el botón de pánico permita elegir entre tres opciones: 1. Robo / Sospechosos, 2. Incendio, 3. Urgencia Médica. Actualiza `AlertModel`, `server.js` y la pantalla de alarma `active_alert_dialog.dart` para que muestre el color e ícono correspondiente a cada tipo."*
 
-#### 💡 Prompt 4: Cambiar o Personalizar el Sonido de la Sirena
-> *"Explícame cómo reemplazar el archivo `app/assets/sounds/alarm_siren.wav` por un tono personalizado y cómo configurar `app/lib/services/alarm_player_service.dart` para que el usuario pueda elegir entre diferentes tonos de alarma desde `settings_sheet.dart`."*
-
----
-
-## 🛠️ 4. Cómo Compilar la App Flutter
-
-Si hiciste cambios en el código y quieres generar un nuevo instalador `.apk`:
-
-1. Asegúrate de tener Flutter instalado (`flutter --version`).
-2. Abre la terminal en la carpeta `app`:
-   ```bash
-   cd app
-   ```
-3. Descarga las librerías:
-   ```bash
-   flutter pub get
-   ```
-4. Verifica que el código no tenga errores:
-   ```bash
-   dart analyze lib
-   ```
-5. Compila el APK optimizado para arquitectura ARMv8 (64-bit):
-   ```bash
-   flutter build apk --target-platform android-arm64
-   ```
-6. El nuevo APK estará en:
-   `app/build/app/outputs/flutter-apk/app-release.apk`
+#### 🟢 Para cambiar el sonido de la sirena:
+> *"Quiero cambiar el sonido de la alarma. Explícame cómo reemplazar `app/assets/sounds/alarm_siren.wav` o cómo modificar `alarm_player_service.dart` para permitir seleccionar entre 3 sonidos diferentes desde la pantalla de configuración."*
 
 ---
 
-## 🔬 5. ¿Cómo funciona por dentro la Alerta Máxima?
+## 🔬 ¿Cómo logra la app sonar tan fuerte con el teléfono bloqueado?
 
-El gran desafío en Android moderno es evitar que el sistema duerma la aplicación cuando el teléfono tiene la pantalla apagada. Así está resuelto:
-
-1. **Permiso de Ignorar Optimización de Batería (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`)**:
-   - Evita que el Doze Mode de Android congele las conexiones de red.
-2. **Foreground Service Activo (`flutter_foreground_task`)**:
-   - Crea un servicio en primer plano persistente con permisos `FOREGROUND_SERVICE_REMOTE_MESSAGING` y `FOREGROUND_SERVICE_DATA_SYNC` (Android 14+ compatible).
-   - Mantiene activos los bloqueos de procesador y antena (`WakeLock` y `WifiLock`).
-3. **Despertar Pantalla Bloqueada (Código Nativo en Kotlin)**:
-   - En `MainActivity.kt`:
-     ```kotlin
-     setShowWhenLocked(true)
-     setTurnScreenOn(true)
-     val wakeLock = powerManager.newWakeLock(
-         PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
-         "AlertaVecinal:EmergencyWakeLock"
-     )
-     wakeLock.acquire(15000L)
-     keyguardManager.requestDismissKeyguard(this, null)
-     ```
-4. **Forzado de Volumen Máximo**:
-   - Usa `AudioManager.STREAM_ALARM` ajustado programáticamente al 100% de su capacidad en el milisegundo exacto en que llega la emergencia, sobrepasando los perfiles normales de volumen.
-
----
-
-## 🎨 6. Principios de Diseño Visual
-
-La interfaz de la app y el panel web siguen estrictamente las directrices de **Modo Claro Primero (Swiss Clean / Enterprise)**:
-- **Fondos**: Blanco puro (`#FFFFFF`) y porcelana (`#F8FAFC`).
-- **Bordes**: Pizarra fina (`#E2E8F0`).
-- **Tipografía**: Pizarra profunda (`#0F172A` / `#1E293B`).
-- **Colores de Estado**:
-  - 🟢 **Verde Salvia (`#68A678`)**: En línea y red protegida.
-  - 🟡 **Ámbar (`#E09F67`)**: Reconectando o permiso de batería pendiente.
-  - 🔴 **Carmesí Muted (`#DC2626`)**: Alerta de emergencia activa.
+Por si tienes curiosidad de cómo está programado por dentro:
+1. **Canal Nativo en Kotlin (`MainActivity.kt`)**: Utiliza `setShowWhenLocked(true)`, `setTurnScreenOn(true)` y `PowerManager.FULL_WAKE_LOCK` para obligar al teléfono a iluminar la pantalla aunque tenga patrón o huella dactilar.
+2. **Volumen de Alarma Forzado**: Utiliza el flujo `STREAM_ALARM` del sistema y lo eleva al 100% programáticamente al recibir la alerta, ignorando si el teléfono estaba en vibrador o volumen bajo.
+3. **Servicio en Primer Plano (`flutter_foreground_task`)**: Mantiene un proceso activo permanente con un candado de CPU y candado de WiFi (`allowWakeLock` y `allowWifiLock`), evitando que Android mate la conexión.
 
 ---
 
 ## 📄 Licencia
 
-Proyecto de código abierto desarrollado para la seguridad y protección de vecinos y comunidades. Libre para usar, modificar y distribuir.
+Código libre para uso comunitario. Puedes modificarlo, compartirlo y adaptarlo a las necesidades de tu propio pasaje, barrio o edificio.

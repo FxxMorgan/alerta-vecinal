@@ -138,16 +138,16 @@ class _SettingsSheetState extends State<SettingsSheet> {
             ),
             const SizedBox(height: 16),
 
-            // Dirección del servidor local
+            // Dirección del servidor
             const Text(
-              'Servidor Local (WebSocket)',
+              'Dirección del Servidor (WebSocket)',
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 6),
             TextField(
               controller: _urlController,
               decoration: InputDecoration(
-                hintText: 'ws://192.168.1.100:8080',
+                hintText: 'ws://192.168.1.100:7866 o wss://tu-dominio.com',
                 filled: true,
                 fillColor: AppColors.surfaceSlateLight,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

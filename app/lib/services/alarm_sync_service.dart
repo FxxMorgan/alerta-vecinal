@@ -59,7 +59,8 @@ class AlarmSyncService {
   int _connectedNeighbors = 0;
   int get connectedNeighbors => _connectedNeighbors;
 
-  String _serverUrl = 'wss://vecinos.fxxmorgan.qzz.io';
+  // Dirección por defecto: Coloca la IP de tu PC o tu dominio en la nube
+  String _serverUrl = 'ws://192.168.1.100:7866';
   String get serverUrl => _serverUrl;
 
   String _neighborName = 'Casa 1';
@@ -76,7 +77,7 @@ class AlarmSyncService {
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _serverUrl = prefs.getString('server_url') ?? 'wss://vecinos.fxxmorgan.qzz.io';
+    _serverUrl = prefs.getString('server_url') ?? 'ws://192.168.1.100:7866';
     _neighborName = prefs.getString('neighbor_name') ?? 'Casa 1';
 
     // Inicializar reproductor de audio
